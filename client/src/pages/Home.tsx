@@ -23,6 +23,24 @@ function formatTime(date: Date): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+// 获取指定 UTC 偏移量的时间
+// utcOffset: 时区偏移量（如 +8 表示 UTC+8，-8 表示 UTC-8）
+function getTimeInTimezone(date: Date, utcOffset: number): Date {
+  // 方法：先转换为 UTC，然后加上目标时区的偏移
+  
+  // 获取本地时区的偏移（分钟）
+  // getTimezoneOffset() 返回的是本地时间比 UTC 晚的分钟数
+  const localOffsetMinutes = date.getTimezoneOffset();
+  
+  // 转换为 UTC 时间（转换为毫秒）
+  const utcTime = date.getTime() + localOffsetMinutes * 60 * 1000;
+  
+  // 加上目标时区的偏移（转换为毫秒）
+  const targetOffsetMs = utcOffset * 60 * 60 * 1000;
+  
+  return new Date(utcTime + targetOffsetMs);
+}
+
 interface TimeDisplay {
   utc8: string;
   utcMinus8: string;
@@ -55,12 +73,12 @@ export default function Home() {
       const now = new Date();
       const timestamp = Math.floor(now.getTime() / 1000);
 
-      // UTC+8 时间
-      const utc8Time = new Date(now.getTime() + 8 * 60 * 60 * 1000);
+      // UTC+8 时间（东八区，北京时间）
+      const utc8Time = getTimeInTimezone(now, 8);
       const utc8Str = `${formatTime(utc8Time)} UTC+8`;
 
-      // UTC-8 时间
-      const utcMinus8Time = new Date(now.getTime() - 8 * 60 * 60 * 1000);
+      // UTC-8 时间（西八区）
+      const utcMinus8Time = getTimeInTimezone(now, -8);
       const utcMinus8Str = `${formatTime(utcMinus8Time)} UTC-8`;
 
       setCurrentTime({
@@ -88,12 +106,12 @@ export default function Home() {
 
     const date = new Date(ts * 1000);
 
-    // UTC+8
-    const utc8 = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+    // UTC+8（东八区，北京时间）
+    const utc8 = getTimeInTimezone(date, 8);
     const utc8Str = `${formatTime(utc8)} UTC+8`;
 
-    // UTC-8
-    const utcMinus8 = new Date(date.getTime() - 8 * 60 * 60 * 1000);
+    // UTC-8（西八区）
+    const utcMinus8 = getTimeInTimezone(date, -8);
     const utcMinus8Str = `${formatTime(utcMinus8)} UTC-8`;
 
     setConvertedTime({
