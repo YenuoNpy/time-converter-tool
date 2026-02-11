@@ -12,6 +12,17 @@ import { Copy, Check } from "lucide-react";
  * - Poppins 标题字体 + Inter 正文字体
  */
 
+// 格式化时间为 YYYY-MM-DD HH:MM:SS 格式
+function formatTime(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 interface TimeDisplay {
   utc8: string;
   utcMinus8: string;
@@ -46,11 +57,11 @@ export default function Home() {
 
       // UTC+8 时间
       const utc8Time = new Date(now.getTime() + 8 * 60 * 60 * 1000);
-      const utc8Str = utc8Time.toISOString().replace("Z", " UTC+8");
+      const utc8Str = `${formatTime(utc8Time)} UTC+8`;
 
       // UTC-8 时间
       const utcMinus8Time = new Date(now.getTime() - 8 * 60 * 60 * 1000);
-      const utcMinus8Str = utcMinus8Time.toISOString().replace("Z", " UTC-8");
+      const utcMinus8Str = `${formatTime(utcMinus8Time)} UTC-8`;
 
       setCurrentTime({
         utc8: utc8Str,
@@ -79,11 +90,11 @@ export default function Home() {
 
     // UTC+8
     const utc8 = new Date(date.getTime() + 8 * 60 * 60 * 1000);
-    const utc8Str = utc8.toISOString().replace("Z", " UTC+8");
+    const utc8Str = `${formatTime(utc8)} UTC+8`;
 
     // UTC-8
     const utcMinus8 = new Date(date.getTime() - 8 * 60 * 60 * 1000);
-    const utcMinus8Str = utcMinus8.toISOString().replace("Z", " UTC-8");
+    const utcMinus8Str = `${formatTime(utcMinus8)} UTC-8`;
 
     setConvertedTime({
       utc8: utc8Str,
